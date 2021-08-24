@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {DATA, PostDataType} from "../data";
+import {PostDataType} from "../data";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import {AppHeaderIcon} from "../components/AppHeaderIcon";
 import {MainNavigationPropsType, MainRoutes} from "../navigation/StackScreen";
@@ -7,7 +7,6 @@ import {PostList} from "../components/PostList";
 import {DrawerActions} from "@react-navigation/native";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../store";
-import {loadPosts} from "../store/actions/postActions";
 
 type MainScreenPropsType = {
     navigation: MainNavigationPropsType<MainRoutes.Booked>

@@ -4,11 +4,13 @@ import {PostDataType} from "../../data";
 type InitialStateType = {
     allPosts: Array<PostDataType>
     bookedPosts: Array<PostDataType>
+    loading: boolean
 }
 
 const initialState = {
     allPosts: [],
-    bookedPosts: []
+    bookedPosts: [],
+    loading: true
 }
 
 export const postReducer = (state: InitialStateType = initialState, action: PostActionType): InitialStateType => {
@@ -17,7 +19,8 @@ export const postReducer = (state: InitialStateType = initialState, action: Post
             return {
                 ...state,
                 allPosts: action.payload.data,
-                bookedPosts: action.payload.data.filter(post => post.booked)
+                bookedPosts: action.payload.data.filter((post) => post.booked),
+                loading: false
             }
         }
         case ACTIONS.TOGGLE_BOOKED: {
@@ -40,13 +43,7 @@ export const postReducer = (state: InitialStateType = initialState, action: Post
         }
         case ACTIONS.ADD_POST: {
             return {
-                ...state, allPosts: [{
-                    id: Date.now().toString(),
-                    img: action.payload.img,
-                    text: action.payload.text,
-                    date: new Date().toJSON(),
-                    booked: false,
-                }, ...state.allPosts]
+                ...state, allPosts: [action.payload.post, ...state.allPosts]
             }
         }
 

@@ -1,4 +1,8 @@
-import {DATA, PostDataType} from "../../data";
+import * as FileSystem from 'expo-file-system';
+
+import {ThunkDispatch} from "redux-thunk";
+import {DB} from "../../db";
+import {PostDataType} from "../../data";
 
 export enum ACTIONS {
     LOAD_POSTS = 'LOAD_POSTS',
@@ -8,10 +12,10 @@ export enum ACTIONS {
 }
 
 
-export const loadPosts = () => ({
+export const loadPosts = (data: Array<PostDataType>) => ({
     type: ACTIONS.LOAD_POSTS,
     payload: {
-        data: DATA
+        data
     }
 
 }) as const
@@ -33,18 +37,55 @@ export const removePost = (id: string) => ({
 
 }) as const
 
-export const addPost = (text: string, image: string) => ({
+export const addPost = (post: PostDataType) => ({
     type: ACTIONS.ADD_POST,
     payload: {
-        img: image,
-        text: text,
+        post
     }
 }) as const
 
-export
-type PostActionType = ReturnType<typeof loadPosts>
+export type PostActionType = ReturnType<typeof loadPosts>
     | ReturnType<typeof toggleBooked>
     | ReturnType<typeof removePost>
     | ReturnType<typeof addPost>
 
 
+export const fetchPostData = () => async (dispatch: ThunkDispatch<{}, any, PostActionType>) => {
+    const result = await DB.getPosts() as PostDataType[]
+    dispatch(loadPosts(result))
+}
+
+
+export const createPost = (post: PostDataType) => async (dispatch: ThunkDispatch<{}, any, PostActionType>) => {
+    console.log('POST', post)
+    const fileName: string = post.img.split('/').pop() as string
+
+    const newPath = FileSystem.documentDirectory + fileName
+    try {
+        await FileSystem.moveAsync({
+            to: newPath,
+            from: post.img
+        })
+    } catch (e) {
+        console.log('Error', e)
+    }
+
+    const payload = {...post, img: newPath}
+
+    const id = await DB.createPost(payload)
+
+    if (typeof id === "string") {
+        payload.id = id
+    }
+    dispatch(addPost(payload))
+}
+
+export const updateBooked = (post: PostDataType) => async (dispatch: ThunkDispatch<{}, any, PostActionType>) => {
+    await DB.updatePost(post)
+    dispatch(toggleBooked(post.id))
+}
+
+export const deletePost = (id: string) => async (dispatch: ThunkDispatch<{}, any, PostActionType>) => {
+    await DB.removePost(id)
+    dispatch(removePost(id))
+}

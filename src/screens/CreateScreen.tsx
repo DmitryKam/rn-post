@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
     Button,
     Image,
@@ -17,7 +17,8 @@ import {AppHeaderIcon} from "../components/AppHeaderIcon";
 import {MainNavigationPropsType, MainRoutes} from "../navigation/StackScreen";
 import {THEME} from "../theme";
 import {useDispatch} from "react-redux";
-import {addPost} from "../store/actions/postActions";
+import {addPost, createPost} from "../store/actions/postActions";
+import {PhotoPicker} from "../components/PhotoPicker";
 
 type CreateScreenPropsType = {
     navigation: MainNavigationPropsType<MainRoutes.Create>
@@ -27,7 +28,7 @@ export const CreateScreen: React.FC<CreateScreenPropsType> = (props) => {
     const {navigation} = props
     const [text, setText] = useState<string>('')
     const dispatch = useDispatch()
-
+    const imageRef = useRef<string>()
 
     useEffect(() => {
         navigation.setOptions({
@@ -45,11 +46,23 @@ export const CreateScreen: React.FC<CreateScreenPropsType> = (props) => {
         })
     }, [navigation])
 
-
     const saveHandler = () => {
-        dispatch(addPost(text, 'https://cs7.pikabu.ru/post_img/2018/05/25/5/1527229519156826952.jpg'))
-        navigation.navigate(MainRoutes.Main)
+        if (imageRef.current) {
+            const post = {
+                id: 'any',
+                date: new Date().toJSON(),
+                text: text,
+                img: imageRef.current,
+                booked: false
+            }
+            dispatch(createPost(post))
+            navigation.navigate(MainRoutes.Main)
+        }
     }
+    const photoPickHandler = (uri: string) => {
+        imageRef.current = uri
+    }
+
     return (
         <ScrollView>
             <TouchableWithoutFeedback onPress={() => {
@@ -64,9 +77,9 @@ export const CreateScreen: React.FC<CreateScreenPropsType> = (props) => {
                         onChangeText={setText}
                         multiline
                     />
-                    <Image style={{width: '100%', height: 300, marginBottom: 10}}
-                           source={{uri: 'https://cs7.pikabu.ru/post_img/2018/05/25/5/1527229519156826952.jpg'}}/>
-                    <Button title={'Create Post'} color={THEME.MAIN_COLOR} onPress={saveHandler}/>
+                    <PhotoPicker onPick={photoPickHandler}/>
+                    <Button title={'Create Post'} color={THEME.MAIN_COLOR} onPress={saveHandler}
+                            disabled={!text && !imageRef.current}/>
                 </View>
             </TouchableWithoutFeedback>
         </ScrollView>

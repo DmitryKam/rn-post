@@ -8,7 +8,7 @@ import {AppHeaderIcon} from "../components/AppHeaderIcon";
 import {MainNavigationPropsType, MainRoutes, ScreensRouteProp} from "../navigation/StackScreen";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../store";
-import {removePost, toggleBooked} from "../store/actions/postActions";
+import {deletePost, removePost, toggleBooked, updateBooked} from "../store/actions/postActions";
 
 type MainScreenPropsType = {
     navigation: MainNavigationPropsType<MainRoutes.Post>
@@ -22,8 +22,8 @@ export const PostScreen: React.FC<MainScreenPropsType> = (props) => {
     const {postId, date} = route.params
     const post = allPost.find(post => post.id === postId) as PostDataType
     console.log('post', post)
-    const changeHandler = useCallback((id: string) => {
-        dispatch(toggleBooked(id))
+    const changeHandler = useCallback((post: PostDataType) => {
+        dispatch(updateBooked(post))
     }, [dispatch])
 
     useEffect(() => {
@@ -37,7 +37,7 @@ export const PostScreen: React.FC<MainScreenPropsType> = (props) => {
                     return (
                         <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
                             <Item title={'Take photo'} iconName={iconName} onPress={() => {
-                                changeHandler(postId)
+                                changeHandler(post)
                             }}/>
                         </HeaderButtons>
                     )
@@ -60,7 +60,7 @@ export const PostScreen: React.FC<MainScreenPropsType> = (props) => {
                 },
                 {
                     text: "Delete", style: 'destructive', onPress: () => {
-                        dispatch(removePost(postId))
+                        dispatch(deletePost(postId))
                     }
                 }
             ],

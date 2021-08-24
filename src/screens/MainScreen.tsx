@@ -6,8 +6,10 @@ import {MainNavigationPropsType, MainRoutes} from "../navigation/StackScreen";
 import {PostList} from "../components/PostList";
 import {DrawerActions} from "@react-navigation/native";
 import {useDispatch, useSelector} from "react-redux";
-import {loadPosts} from "../store/actions/postActions";
+import {fetchPostData, loadPosts} from "../store/actions/postActions";
 import {AppStateType} from "../store";
+import {ActivityIndicator, StyleSheet, View} from "react-native";
+import {THEME} from "../theme";
 
 
 type MainScreenPropsType = {
@@ -18,6 +20,7 @@ export const MainScreen: React.FC<MainScreenPropsType> = (props) => {
     const {navigation} = props
     const dispatch = useDispatch()
     const allPosts = useSelector<AppStateType, Array<PostDataType>>(state => state.post.allPosts)
+    const loading = useSelector<AppStateType, boolean>(state => state.post.loading)
 
     useEffect(() => {
         navigation.setOptions({
@@ -46,7 +49,7 @@ export const MainScreen: React.FC<MainScreenPropsType> = (props) => {
 
 
     useEffect(() => {
-        dispatch(loadPosts())
+        dispatch(fetchPostData())
     }, [dispatch])
 
     const openPostHandler = (post: PostDataType) => {
@@ -55,8 +58,22 @@ export const MainScreen: React.FC<MainScreenPropsType> = (props) => {
         })
     }
 
+    if (loading) {
+        return <View style={styles.center}>
+            <ActivityIndicator color={THEME.MAIN_COLOR}/>
+        </View>
+    }
 
     return (
         <PostList data={allPosts} onOpen={openPostHandler}/>
     )
 }
+
+
+const styles = StyleSheet.create({
+    center: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    }
+})

@@ -1,6 +1,6 @@
 import React from "react";
-import {FlatList, StyleSheet, View} from "react-native";
-import {DATA, PostDataType} from "../data";
+import {FlatList, StyleSheet, Text, View} from "react-native";
+import {PostDataType} from "../data";
 import {Post} from "./Post";
 
 
@@ -11,6 +11,10 @@ type PostListPropsType = {
 
 export const PostList: React.FC<PostListPropsType> = (props) => {
     const {data, onOpen} = props
+
+    if (!data.length) {
+        return <View style={styles.wrapper}><Text style={styles.noItems}>There are no posts</Text></View>
+    }
 
     const renderItem = ({item}: { item: PostDataType }) => {
 
@@ -27,5 +31,11 @@ export const PostList: React.FC<PostListPropsType> = (props) => {
 const styles = StyleSheet.create({
     wrapper: {
         padding: 10
+    },
+    noItems: {
+        fontSize: 18,
+        fontFamily: 'open-regular',
+        textAlign: "center",
+        marginVertical: 10
     }
 })

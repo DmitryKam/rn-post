@@ -1,15 +1,16 @@
+/* eslint global-require: */
 import * as Font from 'expo-font'
-import {DB} from './db'
+import { DB } from './db'
 
 export const bootstrap = async () => {
-    try {
-        await Font.loadAsync({
-            'open-bold': require('../assets/fonts/OpenSans-Bold.ttf'),
-            'open-regular': require('../assets/fonts/OpenSans-Regular.ttf')
-        })
-        await DB.init()
-        console.log('Database started...')
-    } catch (e) {
-        console.log('Error', e)
-    }
+  try {
+    await Font.loadAsync({
+      'open-bold': require('../assets/fonts/OpenSans-Bold.ttf'),
+      'open-regular': require('../assets/fonts/OpenSans-Regular.ttf')
+    })
+    await DB.init()
+    console.log('Database started...')
+  } catch (e) {
+    console.log('Error', e)
+  }
 }

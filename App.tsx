@@ -1,33 +1,26 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import AppLoading from "expo-app-loading";
-import {bootstrap} from "./src/bootstrap";
-import {AppNavigation} from "./src/navigation/AppNavigation";
-import {Provider} from "react-redux";
+import React, { useState } from 'react'
+import AppLoading from 'expo-app-loading'
+import { Provider } from 'react-redux'
+import { bootstrap } from '~/bootstrap'
+import { AppNavigation } from '~/navigation/AppNavigation'
 import store from './src/store'
 
-
 export default function App() {
-    const [isReady, setIsReady] = useState<boolean>(false)
+  const [isReady, setIsReady] = useState<boolean>(false)
 
-    if (!isReady) {
-        return <AppLoading
-            startAsync={bootstrap}
-            onFinish={() => setIsReady(true)} onError={(err) => console.log(err)}/>
-    }
-
+  if (!isReady) {
     return (
-        <Provider store={store}>
-            <AppNavigation/>
-        </Provider>
-    );
-}
+      <AppLoading
+        startAsync={bootstrap}
+        onFinish={() => setIsReady(true)}
+        onError={err => console.log(err)}
+      />
+    )
+  }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
+  return (
+    <Provider store={store}>
+      <AppNavigation />
+    </Provider>
+  )
+}

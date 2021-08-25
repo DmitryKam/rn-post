@@ -1,15 +1,12 @@
-import React from "react";
-import {NavigationContainer} from '@react-navigation/native'
+import React from 'react'
+import { NavigationContainer } from '@react-navigation/native'
 
-import {AppStackScreens} from "./StackScreen";
+import { AppStackScreens } from './StackScreen'
 
-
-export const AppNavigation: React.FC = (props): React.ReactElement => {
-
-    return (
-        <NavigationContainer>
-            <AppStackScreens/>
-        </NavigationContainer>
-    )
+export const AppNavigation: React.FC = (): React.ReactElement => {
+  return (
+    <NavigationContainer>
+      <AppStackScreens />
+    </NavigationContainer>
+  )
 }
-
